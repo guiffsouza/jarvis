@@ -1,14 +1,11 @@
-import Audio from "../services/audio.js";
-import ValidadorAudio from "../validations/validador-audio.js";
+import ChatGPT from "../services/chatgpt.js";
 
 export default class AudioController {
   static async recebeAudioClient(req, res, next) {
     try {
-      const { file } = req;
-      ValidadorAudio.existeFile(file);
-      const audio = new Audio();
-      const output = await audio.converteWeBaToMp3(file);
-      ValidadorAudio.output(output);
+      const { frase } = req.body;
+      const chatGpt = new ChatGPT();
+      await chatGpt.post(frase);
       return res.send({
         msg: "Áudio recebido e salvo com sucesso!",
       });

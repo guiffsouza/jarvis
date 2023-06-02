@@ -1,8 +1,7 @@
 export default class Controller {
-  constructor({ view, media, recorder }) {
+  constructor({ view, audio }) {
     this.view = view;
-    this.media = media;
-    this.recorder = recorder;
+    this.audio = audio;
   }
 
   static iniciador(dependencias) {
@@ -11,20 +10,23 @@ export default class Controller {
   }
 
   __iniciar() {
-    this.view.configureStartRecordButton(this.startRecord.bind(this));
-    this.view.configureStopRecordButton(this.stopRecord.bind(this));
+    this.view.configureStartRecognitionButton(
+      this.startReconhecimentoDeVoz.bind(this)
+    );
+
+    this.view.configureStopRecognitionButton(
+      this.stopReconhecimentoDeVoz.bind(this)
+    );
   }
 
-  async startRecord() {
-    const audio = await this.media.getAudioUsuario();
-    this.recorder.startRecord(audio);
+  async startReconhecimentoDeVoz() {
+    const recognition = this.audio.audioToText();
+    recognition.start();
+    return recognition;
   }
 
-  async stopRecord() {
-    this.recorder.stopRecord();
-    setTimeout(() => {
-      const audioUrl = this.recorder.getRecordingUrl();
-      this.view.playAudio(audioUrl);
-    });
+  async stopReconhecimentoDeVoz() {
+    const recognition = this.audio.audioToText();
+    recognition.stop();
   }
 }

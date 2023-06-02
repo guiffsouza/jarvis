@@ -1,2 +1,7 @@
 /node_modules
 /src/assets
+/assets
+/public/audio
+/audio
+
+.env

@@ -1,44 +1,21 @@
 export default class Media {
-  async getAudioUsuario() {
-    const audio = navigator.mediaDevices.getUserMedia({
-      audio: true,
-    });
-    return audio;
-  }
-
-  getAudio() {
-    fetch("http://localhost:3000/audio")
-      .then((res) => {
-        return res.json();
-      })
-      .then((res) => {
-        console.log(res);
-      });
-  }
-
-  postAudio(blob) {
-    const formData = new FormData();
-    formData.append("audio", blob, "gravacao_audio.weba");
-
-    fetch("http://localhost:3000/audio/upload", {
-      method: "POST",
-      body: formData,
-    }).then((res) => {
-      if (res.ok) {
-        console.log("Audio enviado com sucesso");
-      }
-    });
-  }
-
-  postText(text) {
-    fetch("http://localhost:3000/audio", {
+  async postText(text) {
+    const response = await fetch("http://localhost:3000/audio", {
       method: "POST",
       body: JSON.stringify({ frase: text }),
       headers: { "Content-Type": "application/json" },
-    }).then((res) => {
-      if (res.ok) {
-        console.log("Audio enviado com sucesso");
-      }
+    });
+    if (!response.ok) {
+      return false;
+    }
+    return true;
+  }
+
+  deletaAudio(url) {
+    fetch("http://localhost:3000/audio", {
+      method: "POST",
+      body: JSON.stringify({ url: url }),
+      headers: { "Content-Type": "application/json" },
     });
   }
 }

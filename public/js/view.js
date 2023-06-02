@@ -1,46 +1,26 @@
-import AudioParaTexto from "./Audio.js";
-
 export default class View {
   constructor() {
     this.btnStart = document.querySelector("#btnStart");
     this.btnStop = document.querySelector("#btnStop");
-    this.audioElement = document.querySelector("audio");
-    this.recognition = AudioParaTexto();
+    this.audio = document.querySelector("audio");
   }
 
-  clicarGravar(comando) {
+  start(comando) {
     return () => {
       comando();
-      this.toggleAudioElement({ visible: false });
-      this.recognition.start();
+    };
+  }
+  stop(comando) {
+    return () => {
+      comando();
     };
   }
 
-  clicarPauseGravar(comando) {
-    return () => {
-      comando();
-      this.recognition.stop();
-    };
+  configureStartRecognitionButton(comando) {
+    this.btnStart.addEventListener("click", this.start(comando));
   }
 
-  configureStartRecordButton(comando) {
-    this.btnStart.addEventListener("click", this.clicarGravar(comando));
-  }
-
-  configureStopRecordButton(comando) {
-    this.btnStop.addEventListener("click", this.clicarPauseGravar(comando));
-  }
-
-  toggleAudioElement({ visible }) {
-    const classList = this.audioElement.classList;
-    visible ? classList.remove("hidden") : classList.add("hidden");
-  }
-
-  playAudio(url) {
-    const audio = this.audioElement;
-    audio.src = url;
-    audio.muted = false;
-    this.toggleAudioElement({ visible: true });
-    audio.addEventListener("loadedmetadata", (_) => audio.play());
+  configureStopRecognitionButton(comando) {
+    this.btnStop.addEventListener("click", this.stop(comando));
   }
 }

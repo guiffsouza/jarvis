@@ -1,14 +1,11 @@
 import Controller from "./controller.js";
-import Media from "./media.js";
-import Record from "./record.js";
+import Audio from "./Audio.js";
 import View from "./view.js";
 
 const view = new View();
-const media = new Media();
-const recorder = new Record();
+const audio = new Audio();
 
 Controller.iniciador({
   view,
-  media,
-  recorder,
+  audio,
 });

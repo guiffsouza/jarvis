@@ -1,3 +1,4 @@
+import "dotenv/config";
 import App from "./config/config.js";
 
 const app = new App();
