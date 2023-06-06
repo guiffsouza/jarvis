@@ -6,7 +6,7 @@ Faça a sua pergunta por voz e espere a resposta.
 
 ## Iniciando Projeto
 
-`npm run dev`
+`$ npm run dev`
 
 ## Ideia
 
