@@ -6,7 +6,7 @@ export default class ChatGPT {
     return await axios.post(url, params, headers);
   }
 
-  async post(text) {
+  async post(prompt) {
     const options = {
       organization: "org-dG8SjQrlt5RJ9eS24Im4WILy",
       apiKey: process.env.CHATGPT_KEY,
@@ -16,7 +16,7 @@ export default class ChatGPT {
 
     const params = {
       model: "gpt-3.5-turbo",
-      messages: [{ role: "user", content: text }],
+      messages: [{ role: "user", content: prompt }],
     };
 
     const headers = {

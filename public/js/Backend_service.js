@@ -1,4 +1,4 @@
-export default class Media {
+export default class BackendService {
   async postText(text) {
     const response = await fetch("http://localhost:3000/audio", {
       method: "POST",
@@ -12,7 +12,7 @@ export default class Media {
   }
 
   deletaAudio(url) {
-    fetch("http://localhost:3000/audio", {
+    fetch("http://localhost:3000/deletar", {
       method: "POST",
       body: JSON.stringify({ url: url }),
       headers: { "Content-Type": "application/json" },

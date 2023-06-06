@@ -10,6 +10,7 @@ export default class View {
       comando();
     };
   }
+
   stop(comando) {
     return () => {
       comando();

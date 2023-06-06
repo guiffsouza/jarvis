@@ -1,56 +1,56 @@
-import Media from "./media.js";
+import BackendService from "./Backend_service.js";
 
-export default class Audio {
+export default class SpeechRecognition {
   constructor() {
     this.SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
+    this.BackendService = new BackendService();
+    this.recognition = this._setup();
   }
 
   _setup() {
     if (this.SpeechRecognition === undefined) {
       return null;
     }
-    return new this.SpeechRecognition();
-  }
 
-  audioToText() {
-    const recognition = this._setup();
+    const recognition = new this.SpeechRecognition();
 
     if (!recognition) {
       alert("SpeechRecognition não suportado.");
       throw new Error("Seu browser não suporta o SpeechRecognition");
     }
-
     recognition.lang = "pt_BR";
     recognition.onstart = () => {
       console.log("iniciado");
     };
-
     recognition.onend = () => {
       const button = document.querySelector("#btnStop");
       button.click();
     };
-
     recognition.onerror = (e) => {
       console.log("Erro ao iniciar recognition", e);
     };
+    return recognition;
+  }
 
+  async audioElement(audioElement) {
+    audioElement.src = "./audio/audio.mp3";
+    audioElement.muted = false;
+    await audioElement.play();
+    this.BackendService.deletaAudio(
+      "/home/guiffsouza/projects/lidando-com-audios/jarvis/public/audio/audio.mp3"
+    );
+  }
+
+  audioToText(audioElement) {
+    const recognition = this._setup();
     recognition.onresult = async (e) => {
       const resultado = e.results[0][0].transcript;
-      const media = new Media();
-      const response = await media.postText(resultado);
+      const response = await this.BackendService.postText(resultado);
       if (response) {
-        const audio = document.querySelector("audio");
-        audio.src = "./audio/audio.mp3";
-        audio.muted = false;
-        await audio.play();
-        media.deletaAudio(
-          "/home/guiffsouza/projects/lidando-com-audios/jarvis/public/audio/audio.mp3"
-        );
+        await this.audioElement(audioElement);
       }
-      return resultado;
     };
-
     return recognition;
   }
 }
