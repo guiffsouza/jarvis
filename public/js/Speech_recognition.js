@@ -5,52 +5,41 @@ export default class SpeechRecognition {
     this.SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
     this.BackendService = new BackendService();
-    this.recognition = this._setup();
+    this.recognition = this.iniciar();
   }
 
   _setup() {
     if (this.SpeechRecognition === undefined) {
       return null;
     }
+    return new this.SpeechRecognition();
+  }
 
-    const recognition = new this.SpeechRecognition();
-
-    if (!recognition) {
-      alert("SpeechRecognition não suportado.");
-      throw new Error("Seu browser não suporta o SpeechRecognition");
-    }
+  iniciar(button, audio) {
+    const recognition = this._setup();
+    if (!recognition) alert("SpeechRecognition não suportado.");
     recognition.lang = "pt_BR";
-    recognition.onstart = () => {
-      console.log("iniciado");
-    };
-    recognition.onend = () => {
-      const button = document.querySelector("#btnStop");
-      button.click();
-    };
-    recognition.onerror = (e) => {
-      console.log("Erro ao iniciar recognition", e);
-    };
+    recognition.onstart = () => console.log("iniciando");
+    recognition.onend = () => button.click();
+    recognition.onerror = (e) => console.log("Erro ao iniciar", e);
+    recognition.onresult = (e) => this.audioToText(e, audio);
     return recognition;
   }
 
-  async audioElement(audioElement) {
-    audioElement.src = "./audio/audio.mp3";
-    audioElement.muted = false;
-    await audioElement.play();
+  async audioElement(audio) {
+    audio.src = "./audio/audio.mp3";
+    audio.muted = false;
+    await audio.play();
     this.BackendService.deletaAudio(
       "/home/guiffsouza/projects/lidando-com-audios/jarvis/public/audio/audio.mp3"
     );
   }
 
-  audioToText(audioElement) {
-    const recognition = this._setup();
-    recognition.onresult = async (e) => {
-      const resultado = e.results[0][0].transcript;
-      const response = await this.BackendService.postText(resultado);
-      if (response) {
-        await this.audioElement(audioElement);
-      }
-    };
-    return recognition;
+  async audioToText(e, audio) {
+    const resultado = e.results[0][0].transcript;
+    const response = await this.BackendService.postText(resultado);
+    if (response) {
+      await this.audioElement(audio);
+    }
   }
 }

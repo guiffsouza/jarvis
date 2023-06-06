@@ -1,17 +1,15 @@
-import SpeechRecognition from "./Speech_recognition.js";
-
 export default class Controller {
-  constructor({ view }) {
+  constructor({ view, speechRecognition }) {
     this.view = view;
-    this.SpeechRecognition = new SpeechRecognition();
+    this.SpeechRecognition = speechRecognition;
   }
 
   static iniciador(dependencias) {
     const instance = new Controller(dependencias);
-    return instance.__iniciar();
+    return instance._iniciar();
   }
 
-  __iniciar() {
+  _iniciar() {
     this.view.configureStartRecognitionButton(
       this.startReconhecimentoDeVoz.bind(this)
     );
@@ -22,14 +20,13 @@ export default class Controller {
   }
 
   async startReconhecimentoDeVoz() {
-    const htmlAudioElement = this.view.audio;
-    const recognition = this.SpeechRecognition.audioToText(htmlAudioElement);
+    const audio = this.view.audio;
+    const btnStop = this.view.btnStop;
+    const recognition = this.SpeechRecognition.iniciar(btnStop, audio);
     recognition.start();
-    return recognition;
   }
 
   async stopReconhecimentoDeVoz() {
-    const recognition = this.SpeechRecognition.audioToText();
-    recognition.stop();
+    this.SpeechRecognition.iniciar().stop();
   }
 }
